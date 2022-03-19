@@ -8,8 +8,8 @@ public class EnemyMovement : MonoBehaviour
     private Rigidbody enemyBody;
     private Transform playerTarget;
 
-    public float speed = 3f;
-    public float attackDistance = 1f;
+    public float speed = 1.8f;
+    public float attackDistance = 1.3f;
     private float chaseAfterAttack = 1f;
     private float currentAttackTime;
     private float defaultAttackTime;
@@ -19,7 +19,7 @@ public class EnemyMovement : MonoBehaviour
     {
         enemyAnim = GetComponentInChildren<CharacterAnimation>();
         enemyBody = GetComponent<Rigidbody>();
-        playerTarget = GameObject.FindWithTag("Player").transform;
+        playerTarget = GameObject.Find("Player").transform;
     }
 
     // Start is called before the first frame update
@@ -32,6 +32,11 @@ public class EnemyMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Attack();
+    }
+
+    private void FixedUpdate()
+    {
         FollowTarget();
     }
 
@@ -42,6 +47,33 @@ public class EnemyMovement : MonoBehaviour
         {
             transform.LookAt(playerTarget);
             enemyBody.velocity = transform.forward * speed;
+
+            if (enemyBody.velocity.sqrMagnitude != 0)
+                enemyAnim.Walk(true);
+        }
+        else if (Vector3.Distance(transform.position, playerTarget.position) <= attackDistance)
+        {
+            enemyBody.velocity = Vector3.zero;
+            enemyAnim.Walk(false);
+            following = false;
+            attacking = true;
+        }
+    }
+
+    void Attack()
+    {
+        if (!attacking) return;
+
+        currentAttackTime += Time.deltaTime;
+        if (currentAttackTime > defaultAttackTime)
+        {
+            enemyAnim.EnemyAttack(Random.Range(0, 3));
+            currentAttackTime = 0f;
+        }
+        if (Vector3.Distance(transform.position, playerTarget.position) > attackDistance + chaseAfterAttack)
+        {
+            attacking = false;
+            following = true;
         }
     }
 
