@@ -16,25 +16,17 @@ public class CharacterAnimation : MonoBehaviour
     {
         anim.SetBool("Movement", move);
     }
-    public void Punch1()
+    public void Punch()
     {
-        anim.SetTrigger("Punch 1");
+        anim.SetTrigger("Punch");
     }
-    public void Punch2()
+    public void Kick()
     {
-        anim.SetTrigger("Punch 2");
+        anim.SetTrigger("Kick");
     }
-    public void Punch3()
+    public void Kiss()
     {
-        anim.SetTrigger("Punch 3");
-    }
-    public void Kick1()
-    {
-        anim.SetTrigger("Kick 1");
-    }
-    public void Kick2()
-    {
-        anim.SetTrigger("Kick 2");
+        anim.SetTrigger("Kiss");
     }
 
     public void EnemyAttack(int attack)

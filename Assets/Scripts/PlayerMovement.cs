@@ -10,9 +10,6 @@ public class PlayerMovement : MonoBehaviour
 
     public float walkSpeed = 3f;
     public float zSpeed = 3f;
-
-    private float yRotate = -90f;
-    private float rotateSpeed = 15f;
     
     void Awake()
     {

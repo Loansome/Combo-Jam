@@ -5,11 +5,9 @@ using UnityEngine;
 public enum ComboState
 {
     NONE,
-    PUNCH1,
-    PUNCH2,
-    PUNCH3,
-    KICK1,
-    KICK2
+    PUNCH,
+    KICK,
+    KISS
 }
 
 public class PlayerAttack : MonoBehaviour
@@ -43,38 +41,44 @@ public class PlayerAttack : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.J)) // punch
         {
-            if (currentComboState == ComboState.PUNCH3 || currentComboState == ComboState.KICK1 || currentComboState == ComboState.KICK2 /* || currentComboTimer > 0.25f (startup frames)*/) // don't punch if end of combo/kicking
+            if (currentComboState == ComboState.KICK || currentComboState == ComboState.KISS || currentComboTimer > 0.25f) // don't punch if end of combo/kicking
                 return;
 
             currentComboState++;
             activateTimerToReset = true;
             currentComboTimer = defaultComboTimer;
 
-            if (currentComboState == ComboState.PUNCH1)
-                playerAnimation.Punch1();
-            if (currentComboState == ComboState.PUNCH2)
-                playerAnimation.Punch2();
-            if (currentComboState == ComboState.PUNCH3)
-                playerAnimation.Punch3();
-
+            if (currentComboState == ComboState.PUNCH)
+                playerAnimation.Punch();
         }
 
         if (Input.GetKeyDown(KeyCode.K)) // kick
         {
-            if (currentComboState == ComboState.KICK2 || currentComboState == ComboState.PUNCH3) // don't kick if ended combo
+            if (currentComboState == ComboState.KISS || currentComboTimer > 0.25f) // don't kick if ended combo
                 return;
 
-            if (currentComboState == ComboState.KICK1)
+            if (currentComboState == ComboState.KICK)
                 currentComboState++;
-            else currentComboState = ComboState.KICK1;
+            else currentComboState = ComboState.KICK;
 
             activateTimerToReset = true;
             currentComboTimer = defaultComboTimer;
 
-            if (currentComboState == ComboState.KICK1)
-                playerAnimation.Kick1();
-            if (currentComboState == ComboState.KICK2)
-                playerAnimation.Kick2();
+            if (currentComboState == ComboState.KICK)
+                playerAnimation.Kick();
+        }
+
+        if (Input.GetKeyDown(KeyCode.L)) // kiss
+        {
+            if (currentComboState == ComboState.KISS || currentComboTimer > 0.25f) // don't kiss if ended combo
+                return;
+
+            currentComboState = ComboState.KISS;
+
+            activateTimerToReset = true;
+            currentComboTimer = defaultComboTimer;
+
+            playerAnimation.Kiss();
         }
     }
 
