@@ -8,8 +8,8 @@ public class PlayerMovement : MonoBehaviour
     private CharacterAnimation playerAnimation;
     private Rigidbody playerBody;
 
-    public float walkSpeed = 3f;
-    public float zSpeed = 3f;
+    public float walkSpeed = 2.5f;
+    public float zSpeed = 5f;
     
     void Awake()
     {

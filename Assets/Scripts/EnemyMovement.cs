@@ -9,7 +9,7 @@ public class EnemyMovement : MonoBehaviour
     private Transform playerTarget;
 
     public float speed = 1.8f;
-    public float attackDistance = 1.3f;
+    public float attackDistance = 1.5f;
     private float chaseAfterAttack = 1f;
     private float currentAttackTime;
     private float defaultAttackTime;
@@ -38,6 +38,8 @@ public class EnemyMovement : MonoBehaviour
     private void FixedUpdate()
     {
         FollowTarget();
+        if (Vector3.Dot((playerTarget.position - transform.position).normalized, transform.forward) < 0f)
+            transform.rotation = Quaternion.LookRotation(-transform.forward, Vector3.up);
     }
 
     void FollowTarget()
@@ -45,15 +47,13 @@ public class EnemyMovement : MonoBehaviour
         if (!following) return;
         if (Vector3.Distance(transform.position, playerTarget.position) > attackDistance)
         {
-            transform.LookAt(playerTarget);
-            enemyBody.velocity = transform.forward * speed;
+            transform.position = Vector3.MoveTowards(transform.position, playerTarget.position, speed * Time.deltaTime);
 
-            if (enemyBody.velocity.sqrMagnitude != 0)
-                enemyAnim.Walk(true);
+            enemyAnim.Walk(true);
         }
         else if (Vector3.Distance(transform.position, playerTarget.position) <= attackDistance)
         {
-            enemyBody.velocity = Vector3.zero;
+            //enemyBody.velocity = Vector3.zero;
             enemyAnim.Walk(false);
             following = false;
             attacking = true;
@@ -76,5 +76,4 @@ public class EnemyMovement : MonoBehaviour
             following = true;
         }
     }
-
 }

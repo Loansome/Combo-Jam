@@ -16,7 +16,7 @@ public class PlayerAttack : MonoBehaviour
     private CharacterAnimation playerAnimation;
 
     private bool activateTimerToReset;
-    private float defaultComboTimer = 0.4f;
+    private float defaultComboTimer = 0.5f;
     private float currentComboTimer;
     private ComboState currentComboState;
 
@@ -41,12 +41,12 @@ public class PlayerAttack : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.J)) // punch
         {
-            if (currentComboState == ComboState.KICK || currentComboState == ComboState.KISS || currentComboTimer > 0.25f) // don't punch if end of combo/kicking
+            if (currentComboState == ComboState.KICK || currentComboState == ComboState.KISS) // don't punch if end of combo/kicking
                 return;
 
             currentComboState++;
             activateTimerToReset = true;
-            currentComboTimer = defaultComboTimer;
+            currentComboTimer = defaultComboTimer - .1f;
 
             if (currentComboState == ComboState.PUNCH)
                 playerAnimation.Punch();
@@ -54,7 +54,7 @@ public class PlayerAttack : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.K)) // kick
         {
-            if (currentComboState == ComboState.KISS || currentComboTimer > 0.25f) // don't kick if ended combo
+            if (currentComboState == ComboState.KISS || currentComboTimer > 0.35f) // don't kick if ended combo
                 return;
 
             if (currentComboState == ComboState.KICK)
@@ -70,13 +70,13 @@ public class PlayerAttack : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.L)) // kiss
         {
-            if (currentComboState == ComboState.KISS || currentComboTimer > 0.25f) // don't kiss if ended combo
+            if (currentComboState == ComboState.KISS || currentComboTimer > 0.35f) // don't kiss if ended combo
                 return;
 
             currentComboState = ComboState.KISS;
 
             activateTimerToReset = true;
-            currentComboTimer = defaultComboTimer;
+            currentComboTimer = defaultComboTimer + .2f;
 
             playerAnimation.Kiss();
         }
