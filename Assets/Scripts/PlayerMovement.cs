@@ -10,22 +10,38 @@ public class PlayerMovement : MonoBehaviour
 
     public float walkSpeed = 2.5f;
     public float zSpeed = 5f;
-    
+
+    public int maxHealth = 1000;
+    int currentHealth;
+    private HealthUI healthUI;
+
     void Awake()
     {
         playerAnimation = GetComponentInChildren<CharacterAnimation>();
         playerBody = GetComponent<Rigidbody>();
+        healthUI = GameObject.FindWithTag("HealthUI").GetComponent<HealthUI>();
+    }
+
+    private void Start()
+    {
+        currentHealth = maxHealth;
     }
 
     void Update()
     {
-        RotatePlayer();
-        WalkAnim();
+        if (!PauseMenu.isPaused)
+        {
+            RotatePlayer();
+            WalkAnim();
+        }
     }
 
     void FixedUpdate()
     {
-        DetectMovement();
+        if (!PauseMenu.isPaused)
+        {
+            DetectMovement();
+        }
     }
 
     void DetectMovement() // Gets inputs for movement
@@ -47,5 +63,38 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
             playerAnimation.Walk(true);
         else playerAnimation.Walk(false);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        Debug.Log("Player hit");
+        playerAnimation.Hit();
+        FindObjectOfType<AudioManager>().Play("Hit");
+        healthUI.DisplayHealth(currentHealth);
+        if (currentHealth <= 0)
+        {
+            PlayerDeath();
+        }
+    }
+
+    void PlayerDeath()
+    {
+        Debug.Log("Player downed");
+        playerAnimation.Death();
+        FindObjectOfType<AudioManager>().Stop("Scroll 1");
+        FindObjectOfType<AudioManager>().Play("Player Death");
+        this.enabled = false;
+        GetComponent<PlayerAttack>().enabled = false;
+        GetComponent<Collider>().enabled = false;
+        StartCoroutine(PlayDead());
+    }
+
+    IEnumerator PlayDead()
+    {
+        yield return new WaitForSecondsRealtime(2);
+        FindObjectOfType<AudioManager>().Play("Game Over");
+        GameObject.Find("Canvas").GetComponent<PauseMenu>().GameOver();
+        yield return 0;
     }
 }

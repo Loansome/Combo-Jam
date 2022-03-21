@@ -12,8 +12,16 @@ public class EnemyMovement : MonoBehaviour
     public float attackDistance = 1.5f;
     private float chaseAfterAttack = 1f;
     private float currentAttackTime;
-    private float defaultAttackTime;
+    private float defaultAttackTime = 2f;
     private bool following, attacking;
+    private bool kissed;
+
+    public Transform attackPoint;
+    public float attackRange = 0.5f;
+    public LayerMask playerLayer;
+
+    public int maxHealth = 7;
+    int currentHealth;
 
     private void Awake()
     {
@@ -27,12 +35,20 @@ public class EnemyMovement : MonoBehaviour
     {
         following = true;
         currentAttackTime = defaultAttackTime;
+        currentHealth = maxHealth;
     }
 
     // Update is called once per frame
     void Update()
     {
         Attack();
+        currentAttackTime += Time.deltaTime;
+        if (currentAttackTime > defaultAttackTime && kissed)
+        {
+            kissed = false;
+            currentAttackTime = defaultAttackTime;
+            enemyAnim.playIdle();
+        }
     }
 
     private void FixedUpdate()
@@ -44,7 +60,7 @@ public class EnemyMovement : MonoBehaviour
 
     void FollowTarget()
     {
-        if (!following) return;
+        if (!following || kissed) return;
         if (Vector3.Distance(transform.position, playerTarget.position) > attackDistance)
         {
             transform.position = Vector3.MoveTowards(transform.position, playerTarget.position, speed * Time.deltaTime);
@@ -63,17 +79,65 @@ public class EnemyMovement : MonoBehaviour
     void Attack()
     {
         if (!attacking) return;
-
-        currentAttackTime += Time.deltaTime;
         if (currentAttackTime > defaultAttackTime)
         {
-            enemyAnim.EnemyAttack(Random.Range(0, 3));
+            enemyAnim.EnemyAttack();
             currentAttackTime = 0f;
+
+            Collider[] hitPlayer = Physics.OverlapSphere(attackPoint.position, attackRange, playerLayer);
+            foreach (Collider player in hitPlayer)
+            {
+                player.GetComponent<PlayerMovement>().TakeDamage(177);
+            }
         }
         if (Vector3.Distance(transform.position, playerTarget.position) > attackDistance + chaseAfterAttack)
         {
             attacking = false;
             following = true;
         }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        enemyAnim.Hit();
+        if (kissed)
+        {
+            kissed = false;
+            currentAttackTime = 0f;
+        }
+
+        if (currentHealth <= 0)
+        {
+            EnemyDeath();
+        }
+        else
+            FindObjectOfType<AudioManager>().Play("Hit");
+    }
+
+    void EnemyDeath()
+    {
+        Debug.Log("Enemy downed");
+        enemyAnim.Death();
+        this.enabled = false;
+        FindObjectOfType<AudioManager>().Play("Enemy Death");
+        GetComponent<Collider>().enabled = false;
+    }
+
+    public void Kissed()
+    {
+        if (!kissed)
+        {
+            enemyAnim.Kissed();
+            currentAttackTime -= 5f;
+            kissed = true;
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (attackPoint == null)
+            return;
+        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
 }

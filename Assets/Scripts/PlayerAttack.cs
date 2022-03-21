@@ -20,6 +20,10 @@ public class PlayerAttack : MonoBehaviour
     private float currentComboTimer;
     private ComboState currentComboState;
 
+    public Transform attackPoint;
+    public float attackRange = 0.5f;
+    public LayerMask enemyLayers;
+
     void Awake()
     {
         playerAnimation = GetComponentInChildren<CharacterAnimation>();
@@ -41,7 +45,7 @@ public class PlayerAttack : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.J)) // punch
         {
-            if (currentComboState == ComboState.KICK || currentComboState == ComboState.KISS) // don't punch if end of combo/kicking
+            if (currentComboState != ComboState.NONE) // don't punch if end of combo/kicking
                 return;
 
             currentComboState++;
@@ -50,11 +54,17 @@ public class PlayerAttack : MonoBehaviour
 
             if (currentComboState == ComboState.PUNCH)
                 playerAnimation.Punch();
+
+            Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, attackRange, enemyLayers);
+            foreach (Collider enemy in hitEnemies)
+            {
+                enemy.GetComponent<EnemyMovement>().TakeDamage(1);
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.K)) // kick
         {
-            if (currentComboState == ComboState.KISS || currentComboTimer > 0.35f) // don't kick if ended combo
+            if (currentComboState == ComboState.KICK || currentComboState == ComboState.KISS || currentComboTimer > 0.35f) // don't kick if ended combo
                 return;
 
             if (currentComboState == ComboState.KICK)
@@ -66,6 +76,12 @@ public class PlayerAttack : MonoBehaviour
 
             if (currentComboState == ComboState.KICK)
                 playerAnimation.Kick();
+
+            Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, attackRange, enemyLayers);
+            foreach (Collider enemy in hitEnemies)
+            {
+                enemy.GetComponent<EnemyMovement>().TakeDamage(1);
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.L)) // kiss
@@ -79,6 +95,12 @@ public class PlayerAttack : MonoBehaviour
             currentComboTimer = defaultComboTimer + .2f;
 
             playerAnimation.Kiss();
+
+            Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, attackRange, enemyLayers);
+            foreach (Collider enemy in hitEnemies)
+            {
+                enemy.GetComponent<EnemyMovement>().Kissed();
+            }
         }
     }
 
@@ -93,5 +115,12 @@ public class PlayerAttack : MonoBehaviour
                 activateTimerToReset = false;
             }
         }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (attackPoint == null)
+            return;
+        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
 }

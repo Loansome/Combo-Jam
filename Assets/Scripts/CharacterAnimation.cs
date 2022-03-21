@@ -29,26 +29,14 @@ public class CharacterAnimation : MonoBehaviour
         anim.SetTrigger("Kiss");
     }
 
-    public void EnemyAttack(int attack)
+    public void EnemyAttack()
     {
-        if (attack == 0)
-            anim.SetTrigger("Attack1");
-        if (attack == 1)
-            anim.SetTrigger("Attack2");
-        if (attack == 2)
-            anim.SetTrigger("Attack3");
+        //if (attack == 0)
+            anim.SetTrigger("Attack");
     }
     public void playIdle()
     {
         anim.Play("Idle");
-    }
-    public void Knockdown()
-    {
-        anim.SetTrigger("Knockdown");
-    }
-    public void StandUp()
-    {
-        anim.SetTrigger("StandUp");
     }
     public void Hit()
     {
@@ -57,6 +45,10 @@ public class CharacterAnimation : MonoBehaviour
     public void Death()
     {
         anim.SetTrigger("Death");
+    }
+    public void Kissed()
+    {
+        anim.SetTrigger("Kissed");
     }
 
 }
