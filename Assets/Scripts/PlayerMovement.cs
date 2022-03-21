@@ -78,6 +78,13 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        FindObjectOfType<AudioManager>().Stop("Scroll 1");
+        FindObjectOfType<AudioManager>().Play("Win");
+        GameObject.Find("Canvas").GetComponent<PauseMenu>().Win();
+    }
+
     void PlayerDeath()
     {
         Debug.Log("Player downed");

@@ -122,13 +122,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 1.8
-  attackDistance: 1
+  attackDistance: 1.2
+  movementRange: 8
   attackPoint: {fileID: 1920040629}
   attackRange: 0.38
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
-  maxHealth: 7
+  maxHealth: 3
 --- !u!1 &4385263869156156810
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,7 +9,8 @@ public class EnemyMovement : MonoBehaviour
     private Transform playerTarget;
 
     public float speed = 1.8f;
-    public float attackDistance = 1.5f;
+    public float attackDistance = 1.2f;
+    public float movementRange = 8.0f;
     private float chaseAfterAttack = 1f;
     private float currentAttackTime;
     private float defaultAttackTime = 2f;
@@ -20,7 +21,7 @@ public class EnemyMovement : MonoBehaviour
     public float attackRange = 0.5f;
     public LayerMask playerLayer;
 
-    public int maxHealth = 7;
+    public int maxHealth = 3;
     int currentHealth;
 
     private void Awake()
@@ -33,7 +34,6 @@ public class EnemyMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        following = true;
         currentAttackTime = defaultAttackTime;
         currentHealth = maxHealth;
     }
@@ -41,6 +41,8 @@ public class EnemyMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Vector3.Distance(transform.position, playerTarget.position) < movementRange)
+            following = true;
         Attack();
         currentAttackTime += Time.deltaTime;
         if (currentAttackTime > defaultAttackTime && kissed)

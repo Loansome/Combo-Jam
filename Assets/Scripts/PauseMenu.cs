@@ -8,6 +8,7 @@ public class PauseMenu : MonoBehaviour
     public static bool isPaused = false;
     public GameObject pauseMenuUI;
     public GameObject gameOverMenuUI;
+    public GameObject winMenuUI;
 
     private void Start()
     {
@@ -50,6 +51,11 @@ public class PauseMenu : MonoBehaviour
         gameOverMenuUI.SetActive(true);
         Time.timeScale = 0;
     }
+    public void Win()
+    {
+        winMenuUI.SetActive(true);
+        Time.timeScale = 0;
+    }
 
     public void LoadMenu()
     {
@@ -58,6 +64,7 @@ public class PauseMenu : MonoBehaviour
         isPaused = false;
         FindObjectOfType<AudioManager>().Stop("Scroll 1");
         FindObjectOfType<AudioManager>().Stop("Game Over");
+        FindObjectOfType<AudioManager>().Stop("Win");
         FindObjectOfType<AudioManager>().Play("Select");
         SceneManager.LoadScene("Level 1");
     }
