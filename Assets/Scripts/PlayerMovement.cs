@@ -11,6 +11,8 @@ public class PlayerMovement : MonoBehaviour
     public float walkSpeed = 2.5f;
     public float zSpeed = 5f;
 
+    public int enemiesLeft = 6;
+
     public int maxHealth = 1000;
     int currentHealth;
     private HealthUI healthUI;
@@ -29,7 +31,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (!PauseMenu.isPaused)
+        if (!PauseMenu.isMenued)
         {
             RotatePlayer();
             WalkAnim();
@@ -38,7 +40,7 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!PauseMenu.isPaused)
+        if (!PauseMenu.isMenued)
         {
             DetectMovement();
         }
@@ -81,8 +83,12 @@ public class PlayerMovement : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         FindObjectOfType<AudioManager>().Stop("Scroll 1");
-        FindObjectOfType<AudioManager>().Play("Win");
-        GameObject.Find("Canvas").GetComponent<PauseMenu>().Win();
+        FindObjectOfType<AudioManager>().Play("Boss");
+        GameObject.Find("Boss").GetComponent<EnemyMovement>().movementRange = 10f;
+        GameObject.Find("Boss Trigger").SetActive(false);
+        GameObject.Find("Boss Gate").GetComponent<Collider>().enabled = true;
+        Camera.main.GetComponent<CameraScroll>().xMax = -21;
+        //GameObject.Find("Canvas").GetComponent<PauseMenu>().Win();
     }
 
     void PlayerDeath()
@@ -90,6 +96,8 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log("Player downed");
         playerAnimation.Death();
         FindObjectOfType<AudioManager>().Stop("Scroll 1");
+        FindObjectOfType<AudioManager>().Stop("Boss");
+        FindObjectOfType<AudioManager>().Stop("Boss Loop");
         FindObjectOfType<AudioManager>().Play("Player Death");
         this.enabled = false;
         GetComponent<PlayerAttack>().enabled = false;

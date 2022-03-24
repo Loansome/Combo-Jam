@@ -21,7 +21,7 @@ public class PlayerAttack : MonoBehaviour
     private ComboState currentComboState;
 
     public Transform attackPoint;
-    public float attackRange = 0.5f;
+    public Vector3 attackRange;
     public LayerMask enemyLayers;
 
     void Awake()
@@ -55,7 +55,7 @@ public class PlayerAttack : MonoBehaviour
             if (currentComboState == ComboState.PUNCH)
                 playerAnimation.Punch();
 
-            Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, attackRange, enemyLayers);
+            Collider[] hitEnemies = Physics.OverlapBox(attackPoint.position, attackRange, Quaternion.Euler(0,0,0), enemyLayers);
             foreach (Collider enemy in hitEnemies)
             {
                 enemy.GetComponent<EnemyMovement>().TakeDamage(1);
@@ -77,7 +77,7 @@ public class PlayerAttack : MonoBehaviour
             if (currentComboState == ComboState.KICK)
                 playerAnimation.Kick();
 
-            Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, attackRange, enemyLayers);
+            Collider[] hitEnemies = Physics.OverlapBox(attackPoint.position, attackRange, Quaternion.Euler(0, 0, 0), enemyLayers);
             foreach (Collider enemy in hitEnemies)
             {
                 enemy.GetComponent<EnemyMovement>().TakeDamage(1);
@@ -96,7 +96,7 @@ public class PlayerAttack : MonoBehaviour
 
             playerAnimation.Kiss();
 
-            Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, attackRange, enemyLayers);
+            Collider[] hitEnemies = Physics.OverlapBox(attackPoint.position, attackRange, Quaternion.Euler(0, 0, 0), enemyLayers);
             foreach (Collider enemy in hitEnemies)
             {
                 enemy.GetComponent<EnemyMovement>().Kissed();
@@ -121,6 +121,6 @@ public class PlayerAttack : MonoBehaviour
     {
         if (attackPoint == null)
             return;
-        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+        Gizmos.DrawWireCube(attackPoint.position, attackRange);
     }
 }

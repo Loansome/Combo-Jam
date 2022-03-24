@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class PauseMenu : MonoBehaviour
 {
     public static bool isPaused = false;
+    public static bool isMenued = false;
     public GameObject pauseMenuUI;
     public GameObject gameOverMenuUI;
     public GameObject winMenuUI;
@@ -37,6 +38,7 @@ public class PauseMenu : MonoBehaviour
         pauseMenuUI.SetActive(false);
         Time.timeScale = 1;
         isPaused = false;
+        isMenued = false;
     }
 
     void Pause()
@@ -44,15 +46,23 @@ public class PauseMenu : MonoBehaviour
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0;
         isPaused = true;
+        isMenued = true;
+    }
+
+    public void SelectSound()
+    {
+        FindObjectOfType<AudioManager>().Play("Select");
     }
 
     public void GameOver()
     {
+        isMenued = true;
         gameOverMenuUI.SetActive(true);
         Time.timeScale = 0;
     }
     public void Win()
     {
+        isMenued = true;
         winMenuUI.SetActive(true);
         Time.timeScale = 0;
     }
@@ -62,6 +72,7 @@ public class PauseMenu : MonoBehaviour
         pauseMenuUI.SetActive(false);
         Time.timeScale = 1;
         isPaused = false;
+        isMenued = false;
         FindObjectOfType<AudioManager>().Stop("Scroll 1");
         FindObjectOfType<AudioManager>().Stop("Game Over");
         FindObjectOfType<AudioManager>().Stop("Win");
@@ -73,6 +84,7 @@ public class PauseMenu : MonoBehaviour
         pauseMenuUI.SetActive(false);
         Time.timeScale = 1;
         isPaused = false;
+        isMenued = false;
         FindObjectOfType<AudioManager>().Play("Select");
         Debug.Log("Quitting");
         SceneManager.LoadScene("Title Screen");

@@ -13,12 +13,12 @@ public class EnemyMovement : MonoBehaviour
     public float movementRange = 8.0f;
     private float chaseAfterAttack = 1f;
     private float currentAttackTime;
-    private float defaultAttackTime = 2f;
+    public float defaultAttackTime = 2f;
     private bool following, attacking;
     private bool kissed;
 
     public Transform attackPoint;
-    public float attackRange = 0.5f;
+    public Vector3 attackRange;
     public LayerMask playerLayer;
 
     public int maxHealth = 3;
@@ -86,7 +86,7 @@ public class EnemyMovement : MonoBehaviour
             enemyAnim.EnemyAttack();
             currentAttackTime = 0f;
 
-            Collider[] hitPlayer = Physics.OverlapSphere(attackPoint.position, attackRange, playerLayer);
+            Collider[] hitPlayer = Physics.OverlapBox(attackPoint.position, attackRange, Quaternion.Euler(0,0,0), playerLayer);
             foreach (Collider player in hitPlayer)
             {
                 player.GetComponent<PlayerMovement>().TakeDamage(177);
@@ -122,8 +122,31 @@ public class EnemyMovement : MonoBehaviour
         Debug.Log("Enemy downed");
         enemyAnim.Death();
         this.enabled = false;
-        FindObjectOfType<AudioManager>().Play("Enemy Death");
+        if (this.name == "Boss")
+        {
+            FindObjectOfType<AudioManager>().Stop("Boss");
+            FindObjectOfType<AudioManager>().Stop("Boss Loop");
+            FindObjectOfType<AudioManager>().Play("Enemy Death");
+            StartCoroutine(PlayDead());
+        }
+        else
+        {
+            FindObjectOfType<AudioManager>().Play("Enemy Death");
+            GameObject.Find("Player").GetComponent<PlayerMovement>().enemiesLeft--;
+        }
         GetComponent<Collider>().enabled = false;
+        if (GameObject.Find("Player").GetComponent<PlayerMovement>().enemiesLeft == 0)
+        {
+            GameObject.Find("Boss Gate").GetComponent<Collider>().enabled = false;
+        }
+    }
+
+    IEnumerator PlayDead()
+    {
+        yield return new WaitForSecondsRealtime(2);
+        FindObjectOfType<AudioManager>().Play("Win");
+        GameObject.Find("Canvas").GetComponent<PauseMenu>().Win();
+        yield return 0;
     }
 
     public void Kissed()
@@ -140,6 +163,6 @@ public class EnemyMovement : MonoBehaviour
     {
         if (attackPoint == null)
             return;
-        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+        Gizmos.DrawWireCube(attackPoint.position, attackRange);
     }
 }
