@@ -79,14 +79,26 @@ public class PauseMenu : MonoBehaviour
         FindObjectOfType<AudioManager>().Play("Select");
         SceneManager.LoadScene("Level 1");
     }
-    public void QuitGame()
+
+    public void TitleMenu()
     {
         pauseMenuUI.SetActive(false);
         Time.timeScale = 1;
         isPaused = false;
         isMenued = false;
         FindObjectOfType<AudioManager>().Play("Select");
-        Debug.Log("Quitting");
+        Debug.Log("Loading menu");
         SceneManager.LoadScene("Title Screen");
+    }
+
+    public void QuitGame()
+    {
+        /*pauseMenuUI.SetActive(false);
+        Time.timeScale = 1;
+        isPaused = false;
+        isMenued = false;*/
+        FindObjectOfType<AudioManager>().Play("Select");
+        Debug.Log("QUIT");
+        Application.Quit();
     }
 }

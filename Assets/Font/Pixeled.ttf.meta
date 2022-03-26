@@ -1,15 +1,15 @@
 fileFormatVersion: 2
-guid: 6688c48aa58732644a945b806db6581c
+guid: 351e570c90d933b4cb80226b1480016c
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
   fontSize: 16
-  forceTextureCase: -1
+  forceTextureCase: -2
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Zepto
+  - Pixeled
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
